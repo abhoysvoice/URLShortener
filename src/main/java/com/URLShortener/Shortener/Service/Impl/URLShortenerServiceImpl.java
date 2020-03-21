@@ -1,10 +1,8 @@
-package com.URLShortener.Service.Impl;
+package com.URLShortener.Shortener.Service.Impl;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,14 +13,15 @@ import org.springframework.stereotype.Service;
 
 import com.URLShortener.Domain.ShortURLDataMap;
 import com.URLShortener.Domain.ShortURLDataMapList;
+import com.URLShortener.Domain.ShortURLDataMapObject;
 import com.URLShortener.Exceptions.OutputToStorageFileException;
 import com.URLShortener.Exceptions.ReadStorageFileException;
 import com.URLShortener.Exceptions.UrlNotFoundInRepositoryException;
-import com.URLShortener.Service.URLShortenerService;
+import com.URLShortener.Shortener.Service.URLShortenerService;
+import com.URLShortener.Utils.ShortUrlDataMapService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 @Service
 public class URLShortenerServiceImpl implements URLShortenerService {
@@ -38,9 +37,10 @@ public class URLShortenerServiceImpl implements URLShortenerService {
 	
 	@Override
 	public synchronized ShortURLDataMap getShortenedUrl(String originalUrl) throws ReadStorageFileException, OutputToStorageFileException {
-		List<ShortURLDataMap> existingShortURLMap = getStoredDataMap(); 
+		ShortUrlDataMapService shortUrlDataMapService = new ShortUrlDataMapService();
 		
-		List<ShortURLDataMap> shortenedURLList = existingShortURLMap.stream()
+		List<ShortURLDataMapObject> existingShortURLMap = shortUrlDataMapService.getStoredDataMap(env.getProperty("urlStorageFilePath")); 
+		List<ShortURLDataMapObject> shortenedURLList = existingShortURLMap.stream()
 		.filter(urlMapObj -> urlMapObj.getOriginalUrl().equals(originalUrl))
 		.collect(Collectors.toList());
 		
@@ -55,39 +55,25 @@ public class URLShortenerServiceImpl implements URLShortenerService {
 
 	@Override
 	public ShortURLDataMap getOriginalUrl(String shortenedUrl) throws ReadStorageFileException, UrlNotFoundInRepositoryException {
-		List<ShortURLDataMap> storageFileData = getStoredDataMap();
-		Optional<ShortURLDataMap> originalUrl = storageFileData.stream()
+		ShortUrlDataMapService shortUrlDataMapService = new ShortUrlDataMapService();
+		List<ShortURLDataMapObject> storageFileData = shortUrlDataMapService.getStoredDataMap(env.getProperty("urlStorageFilePath"));
+		
+		Optional<ShortURLDataMapObject> originalUrl = storageFileData.stream()
 				.filter(mapObj -> mapObj.getShortenedUrl().equals(shortenedUrl))
 				.findFirst();
 		
 		if(originalUrl.isPresent())
-			return originalUrl.get();
+			return new ShortURLDataMap(originalUrl.get().getOriginalUrl(), originalUrl.get().getShortenedUrl());
 		
 		throw new UrlNotFoundInRepositoryException();
 	}
 	
-	private List<ShortURLDataMap> getStoredDataMap() throws ReadStorageFileException {
-		ShortURLDataMapList storageFileData;
-		Gson gson = new Gson();
-		
-		try {
-			storageFileData = gson.fromJson(new FileReader(env.getProperty("urlStorageFilePath")), ShortURLDataMapList.class);
-		} catch (FileNotFoundException e) {
-			return new ArrayList<ShortURLDataMap>();
-		} catch (JsonSyntaxException | JsonIOException e) {
-			throw new ReadStorageFileException();
-		}
-		
-		if(storageFileData!=null) {
-			return storageFileData.getShortURLDataMapList();
-		}
-		return new ArrayList<ShortURLDataMap>();
-	}
-	
 	private void addShortenedURLToStorage(String originalUrl, String shortenedUrl) throws ReadStorageFileException, OutputToStorageFileException {
-		List<ShortURLDataMap> existingUrlMap = getStoredDataMap();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		existingUrlMap.add(new ShortURLDataMap(originalUrl, shortenedUrl));
+		ShortUrlDataMapService shortUrlDataMapService = new ShortUrlDataMapService();
+		List<ShortURLDataMapObject> existingUrlMap = shortUrlDataMapService.getStoredDataMap(env.getProperty("urlStorageFilePath"));
+		
+		existingUrlMap.add(new ShortURLDataMapObject(originalUrl, shortenedUrl, LocalDate.now()));
 		ShortURLDataMapList shortURLDataMapList = new ShortURLDataMapList(existingUrlMap);
 		
 		String jsonFormattedData = gson.toJson(shortURLDataMapList);
@@ -101,15 +87,26 @@ public class URLShortenerServiceImpl implements URLShortenerService {
 		}
 	}
 	
-	private String createNewShortenedURL(List<ShortURLDataMap> existingShortURLMap) {
+	private String createNewShortenedURL(List<ShortURLDataMapObject> existingShortURLMap) {
 		StringBuilder shortUrlValue = new StringBuilder();
+		String shortenedUrlResponse = "";
+		boolean alreadyExists = false;
 		int stringCharacterCount = 1;
+		while(!alreadyExists) {
+			while(stringCharacterCount<=shortUrlPreferredLength) {
+				shortUrlValue.append(shortUrlAllowedValues.charAt((int) (Math.random()*shortUrlAllowedValues.length())));
+				stringCharacterCount++;
+			}
+			String newShortenedUrl = env.getProperty("shortUrlPrefix")+shortUrlValue.toString();
 		
-		while(stringCharacterCount<=shortUrlPreferredLength) {
-			shortUrlValue.append(shortUrlAllowedValues.charAt((int) (Math.random()*shortUrlAllowedValues.length())));
-			stringCharacterCount++;
+			long existingShortUrls = existingShortURLMap.stream()
+			.filter(mapObj -> mapObj.getShortenedUrl().equals(newShortenedUrl))
+			.count();
+			
+			shortenedUrlResponse = newShortenedUrl;
+			alreadyExists = existingShortUrls == 0;
 		}
 	
-		return env.getProperty("shortUrlPrefix")+shortUrlValue.toString();
+		return shortenedUrlResponse;
 	}
 }

@@ -1,7 +1,7 @@
 package com.URLShortener.Controllers.Test;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -19,23 +19,25 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.URLShortener.Controllers.StatisticsController;
 import com.URLShortener.Controllers.URLShortenerController;
-import com.URLShortener.Domain.ShortURLDataMap;
+import com.URLShortener.Domain.TotalMappedShortURL;
+import com.URLShortener.Domain.TotalMappedShortURLPerDay;
 import com.URLShortener.Domain.URLRequestObject;
-import com.URLShortener.Shortener.Service.URLShortenerService;
+import com.URLShortener.Statistics.Service.URLShortenerStatisticsService;
 import com.google.gson.Gson;
 
 @WebMvcTest(URLShortenerController.class)
-public class URLShortenerControllerTest {
+public class StatisticsControllerTest {
 	
 	@Autowired
 	private Environment env;
 	
 	@Mock
-	URLShortenerService urlShortenerServiceMock;
+	URLShortenerStatisticsService urlShortenerStatisticsServiceMock;
 	
 	@InjectMocks
-	URLShortenerController urlShortenerController;
+	StatisticsController statisticsController;
 	
 	private MockMvc mvc;
 	
@@ -51,14 +53,14 @@ public class URLShortenerControllerTest {
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
-        mvc = MockMvcBuilders.standaloneSetup(urlShortenerController).build();
+        mvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
     }
     
     @Test
-    public void testControllerMappingShortenUrl() throws Exception {
-    	ShortURLDataMap response = new ShortURLDataMap();
-		when(urlShortenerServiceMock.getShortenedUrl(originalUrl)).thenReturn(response);
-		 this.mvc.perform(post("/shortifier/shortenURL")
+    public void testStatisticsControllerCountShortenedUrls() throws Exception {
+    	TotalMappedShortURL response = new TotalMappedShortURL();
+		when(urlShortenerStatisticsServiceMock.getTotalMappedUrls()).thenReturn(response);
+		 this.mvc.perform(get("/stats/HowManyShortURLs")
 	                .content(createRequestObject())
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON))
@@ -66,10 +68,10 @@ public class URLShortenerControllerTest {
     }
     
     @Test
-    public void testControllerMappingRevertUrl() throws Exception {
-    	ShortURLDataMap response = new ShortURLDataMap();
-		when(urlShortenerServiceMock.getShortenedUrl(originalUrl)).thenReturn(response);
-		 this.mvc.perform(post("/shortifier/revertURL")
+    public void testStatisticsControllerCountShortenedUrlsPerDate() throws Exception {
+    	TotalMappedShortURLPerDay response = new TotalMappedShortURLPerDay();
+		when(urlShortenerStatisticsServiceMock.getTotalMappedUrlsPerDay("2000-12-25")).thenReturn(response);
+		 this.mvc.perform(get("/stats/HowManyShortURLsPerDay/2000-12-25")
 	                .content(createRequestObject())
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON))

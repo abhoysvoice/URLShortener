@@ -1,4 +1,4 @@
-package com.URLShortener.Service;
+package com.URLShortener.Shortener.Service;
 
 import com.URLShortener.Domain.ShortURLDataMap;
 import com.URLShortener.Exceptions.OutputToStorageFileException;

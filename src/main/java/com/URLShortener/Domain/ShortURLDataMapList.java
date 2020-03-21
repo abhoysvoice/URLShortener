@@ -3,16 +3,16 @@ package com.URLShortener.Domain;
 import java.util.List;
 
 public class ShortURLDataMapList {
-	private List<ShortURLDataMap> shortURLDataMapList;
+	private List<ShortURLDataMapObject> shortURLDataMapList;
 	
 	public ShortURLDataMapList() {
 	}
 	
-	public ShortURLDataMapList(List<ShortURLDataMap> shortURLDataMapList) {
+	public ShortURLDataMapList(List<ShortURLDataMapObject> shortURLDataMapList) {
 		this.shortURLDataMapList = shortURLDataMapList;
 	}
 	
-	public List<ShortURLDataMap> getShortURLDataMapList() {
+	public List<ShortURLDataMapObject> getShortURLDataMapList() {
 		return shortURLDataMapList;
 	}
 	

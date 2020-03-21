@@ -38,13 +38,16 @@ private ApiInfo getDescriptionData() {
 	List<VendorExtension> vendors = new ArrayList<VendorExtension>();
 	ApiInfo apiInfo = new ApiInfo(
 			   "David's URL Shortener API Application",
-			   "Two APIs Provided:\n"
+			   "Two URL Shortener APIs Provided:\n"
 			   +"- convert a long url to a short url\n"
-			   +"- revert a short URL to original\n",
+			   +"- revert a short URL to original\n\n"
+			   +"And Two Statistics APIs on the above Functionality\n"
+			   +"- Count total URLs Shortened\n"
+			   +"- Count URLs Shortened on a given day",
 			   "1.0",
-			   "UseThisServiceWillyNillyTOS.com",
+			   "https://media0.giphy.com/media/1xoqQy70KZ98v9JOLM/giphy.gif",
 			   contact ,
-			   "Open Source",
+			   "",
 			   "",
 			   vendors
 			);

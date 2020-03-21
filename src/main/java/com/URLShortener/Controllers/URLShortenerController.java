@@ -13,7 +13,7 @@ import com.URLShortener.Domain.URLRequestObject;
 import com.URLShortener.Exceptions.OutputToStorageFileException;
 import com.URLShortener.Exceptions.ReadStorageFileException;
 import com.URLShortener.Exceptions.UrlNotFoundInRepositoryException;
-import com.URLShortener.Service.URLShortenerService;
+import com.URLShortener.Shortener.Service.URLShortenerService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

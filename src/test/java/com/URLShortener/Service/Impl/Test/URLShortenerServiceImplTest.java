@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +19,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.URLShortener.Domain.ShortURLDataMap;
 import com.URLShortener.Domain.ShortURLDataMapList;
+import com.URLShortener.Domain.ShortURLDataMapObject;
 import com.URLShortener.Exceptions.OutputToStorageFileException;
 import com.URLShortener.Exceptions.ReadStorageFileException;
 import com.URLShortener.Exceptions.UrlNotFoundInRepositoryException;
-import com.URLShortener.Service.URLShortenerService;
-import com.URLShortener.Service.Impl.URLShortenerServiceImpl;
+import com.URLShortener.Shortener.Service.URLShortenerService;
+import com.URLShortener.Shortener.Service.Impl.URLShortenerServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -102,9 +104,9 @@ public class URLShortenerServiceImplTest {
 	
 	
 	private ShortURLDataMapList createTestObjectForFile() {
-		ShortURLDataMap shortURLDataMap = new ShortURLDataMap(testOriginalUrl, testShortenedUrl);
-		List<ShortURLDataMap> existingUrlMap = new ArrayList<ShortURLDataMap>();
-		existingUrlMap.add(shortURLDataMap);
+		ShortURLDataMapObject shortURLDataMapObject = new ShortURLDataMapObject(testOriginalUrl, testShortenedUrl, LocalDate.parse("2020-03-20"));
+		List<ShortURLDataMapObject> existingUrlMap = new ArrayList<ShortURLDataMapObject>();
+		existingUrlMap.add(shortURLDataMapObject);
 		
 		return new ShortURLDataMapList(existingUrlMap);
 	}

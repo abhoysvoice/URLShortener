@@ -1,16 +1,22 @@
 {
   "shortURLDataMapList": [
     {
-      "originalUrl": "www.davidsTestWebsite.com/help/HowDoITestThisBit",
-      "shortenedUrl": "http://dmw.io/hfZb1pT"
+      "shortenedUrl": "http://dmw.io/Y7cMcfB",
+      "originalUrl": "David.ie/This/IsToJust/TryOut/AShortener",
+      "creationDate": {
+        "year": 2020,
+        "month": 3,
+        "day": 21
+      }
     },
     {
-      "originalUrl": "davidTestUrl.com/thisIsAdummyUrl/OrIsIt",
-      "shortenedUrl": "http://dmw.io/pudGrRb"
-    },
-    {
-      "originalUrl": "www.forminganewUrl.com",
-      "shortenedUrl": "http://dmw.io/xludf9M"
+      "shortenedUrl": "http://dmw.io/hZcElCU",
+      "originalUrl": "letsgivethisagoe.com/isThisGonaWork/OfCourseItIs",
+      "creationDate": {
+        "year": 2020,
+        "month": 3,
+        "day": 21
+      }
     }
   ]
 }
