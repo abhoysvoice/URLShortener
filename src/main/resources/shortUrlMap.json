@@ -1,0 +1,16 @@
+{
+  "shortURLDataMapList": [
+    {
+      "originalUrl": "www.davidsTestWebsite.com/help/HowDoITestThisBit",
+      "shortenedUrl": "http://dmw.io/hfZb1pT"
+    },
+    {
+      "originalUrl": "davidTestUrl.com/thisIsAdummyUrl/OrIsIt",
+      "shortenedUrl": "http://dmw.io/pudGrRb"
+    },
+    {
+      "originalUrl": "www.forminganewUrl.com",
+      "shortenedUrl": "http://dmw.io/xludf9M"
+    }
+  ]
+}
